@@ -8,7 +8,7 @@ library(DBI)
 library(RODBC)
 library(lubridate)
 
-start <- as.Date(Sys.time())
+start <- as.Date(Sys.time()) -1
 setwd('C:\\Programs\\gtc_tasks\\Accounts_Grading_Monthly')
 wd<-getwd()
 filename<-paste("Accounts_Grading_",start,".xlsx",sep="")
@@ -103,19 +103,23 @@ write.xlsx(final,file = paste("spreadsheets",filename,sep="/"))
 
 #Now send to distribution list
 
-
+string<-paste(wd,"spreadsheets",filename,sep="/")
+string
 #Now send it to Lee
 
 # Send mail for 3D
+
+library(RDCOMClient)
 OutApp <- COMCreate("Outlook.Application")
 outMail = OutApp$CreateItem(0)
+
+#OutApp <- COMCreate("Outlook.Application")
+#outMail = OutApp$CreateItem(0)
 outMail[["subject"]] = 'Monthly Account Grading'
 outMail[["To"]] = "haider.variava@greentomatocars.com;daria.alekseeva@greentomatocars.com;antony.carolan@greentomatocars.com;ian.bates@greentomatocars.com;james.rowe@greentomatocars.com;sean.sauter@greentomatocars.com"
 #outMail[["To"]] = "antony.carolan@greentomatocars.com"
 outMail[["body"]] ="Hi, Monthly account grading report is attached. Antony"
-outMail[["Attachments"]]$Add(paste(wd,filename,sep="/"))
-
-
+outMail[["Attachments"]]$Add(string)
 
 outMail$Send()
 rm(list = c("OutApp","outMail"))
